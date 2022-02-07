@@ -1,0 +1,93 @@
+{
+  "main": {
+    "id": "c626b49a3ab2e7c7",
+    "type": "split",
+    "children": [
+      {
+        "id": "0ac84d8e033d9876",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "GCSLIDES.md",
+            "mode": "source"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "0fa05bbbd0ec055c",
+    "type": "split",
+    "children": [
+      {
+        "id": "8401f228ea2cf1bc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6fc39ea1a0f4e39e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "346b9ea958210bd1",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "0c70f9808e3d17c3",
+    "type": "split",
+    "children": [
+      {
+        "id": "b1f902cc972b46aa",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f0b81e9a43cc1641",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "GCSLIDES.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "0ac84d8e033d9876",
+  "lastOpenFiles": [
+    "GCSLIDES.md"
+  ]
+}
