@@ -85,7 +85,7 @@ N.B. 1-byte address *could* address 256 cells (512 bytes).
 - Copy calls CONS to allocate new cells with offset, on the stack
 - Copy adds k to address returned by CONS
 - Copy does not copy atoms, they are simply returned verbatim.
-- Likewise, Copy does not not cells which were allocated previously.
+- Likewise, Copy does not copy cells which were allocated previously.
 
 ## Move Overwrites Unused Cells on Stack
 
@@ -104,7 +104,7 @@ N.B. 1-byte address *could* address 256 cells (512 bytes).
 ## Offset
 - `k`
 - applied to address of all new CONS cells 
-	- during Copy, it is known that a copied cell will be copied during compaction
+	- during Copy, it is known that a copied cell will be relocated during compaction
 - CAR is either (1) an atom, (1a) NIL, or (2) a CONS cell 
 	1. ATOM is always +ve
 	0. NIL is always 00
@@ -121,7 +121,7 @@ N.B. 1-byte address *could* address 256 cells (512 bytes).
 		- pure functions cannot refer to "future" data, or self
 		- `set!` is required to create cycles
 		- `set!` -> epicycles + accidental complexity
-		- `set!` == heap (random access)
+		- `set!` required by heap access (aka random access)
 	- `set!` is `MOV`/`STO` low-level assembly function
 	- corollary: Pure Functional notation does not describe `set!`/`heap` well 
 		- force-fitting `set!` into FP leads to more code (aka "code bloat")
@@ -138,13 +138,13 @@ N.B. 1-byte address *could* address 256 cells (512 bytes).
 	
 	In `Eval (expr, env)`, the `env` alist is searched linearly for the first occurrence of a name.
 	
-	Shortening the length of the alist is one way to speed up the interpreter.
+	Shortening the length of the env alist is one way to speed up the interpreter.
 	
 	Optimization: if a variable is unaltered from call to call, then don't add it to the env alist (previous values, already on the alist, hold the same value), and, don't re-eval the variable (since we already have its value).
 	
-	This is the suggestion of the [Peel function](https://justine.lol/sectorlisp2/#listing)
+	The [Peel function](https://justine.lol/sectorlisp2/#listing) suggests this kind of simple optimization.
 	
-	TCO (Tail Call Optimization) accomplishes this same optimization, but, with more complexity.  TCO does the job "more thoroughly", than Peel(), but it might not be worth the extra effort in all cases.
+	TCO (Tail Call Optimization) accomplishes this same optimization, but, with more complexity.  TCO does the job "more thoroughly", than Peel(), but it might not be worth the extra effort in many cases.
 	
 	## Pure Functional GC
 	
