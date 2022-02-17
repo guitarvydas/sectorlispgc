@@ -150,7 +150,7 @@ N.B. 1-byte address *could* address 256 cells (512 bytes).
 	
 	Justine Tunney's GC, in Sector Lisp, demonstrates that GC can be very simple in a Pure Functional paradigm.
 	
-	When consideration for mutation is added, e.g. in the guise of *heaps* and *random access*, etc., code complexity - code bloat - increases.'
+	When consideration for mutation is added, e.g. in the guise of *heaps* and *random access*, etc., code complexity - code bloat - increases.
 	
 	From my perspective, Sector Lisp's main feature is not smallness, but purity of notation.
 	
