@@ -15,19 +15,50 @@ function Gc(A, x) {
   return cx = A, x;
 }
 ```
+Unwound to:
+```
+function Copy(x, m, k) {
+  if (x >= m) {
+  	return x;
+  } else {
+    return k + Cons(Copy(Car(x), m, k),
+                      Copy(Cdr(x), m, k));
+  }
+}
 
+function Gc(A, x) {
+  var C;
+  var B = cx;
+  var x = Copy(x, A, A - B)
+  C = cx;
+  while (C < B) Set(--A, Get(--B));
+  cx = A;
+  return x;
+}
+```
 ## Salient Points
 
 - there are only 2 memory spaces (1) atoms, (2) lists
 - pure functions -> strict stack allocation
-- Copy/move is atomic and creates temporary inconsistencies
+- Copy/move must be atomic - creates temporary inconsistencies
 - move overwrites unused cells on stack
+- no circular (cyclic) lists
+- Eval() calls GC() every time - cleans up after itself
 
 ## Memory Spaces
 
-- +ve index -> atoms
-- -ve index -> lists
-- need only 1 bit to differentiate types <- hardware sign bit
+- 256 bytes (128 cells)
+- address is 1 byte (-127 .. +128)
+- traditional Lisp divides all memory into cells `{car, cdr}`
+- Sector Lisp divides all cells into 2 types: List, Atom
+- Sector Lisp uses sign as type
+	- `>0` Atom
+	- `<0` List
+	- `=0` NIL
+
+	- (ammenable to assembler - branch on flags - BG, BL, BZ)
+
+N.B. 1-byte address *could* address 256 cells (512 bytes).
 
 ## Copy
 
@@ -52,6 +83,9 @@ function Gc(A, x) {
 	- the previous SP (stack pointer)
 	- all cells >= m remain untouched (this includes atoms in +ve space)
 - Copy calls CONS to allocate new cells with offset, on the stack
+- Copy adds k to address returned by CONS
+- Copy does not copy atoms, they are simply returned verbatim.
+- Likewise, Copy does not not cells which were allocated previously.
 
 ## Move Overwrites Unused Cells on Stack
 
@@ -69,8 +103,8 @@ function Gc(A, x) {
 
 ## Offset
 - `k`
-- applied to CDR only 
-	- CDR is the pointer to the next cell in a list
+- applied to address of all new CONS cells 
+	- during Copy, it is known that a copied cell will be copied during compaction
 - CAR is either (1) an atom, (1a) NIL, or (2) a CONS cell 
 	1. ATOM is always +ve
 	0. NIL is always 00
@@ -80,6 +114,48 @@ function Gc(A, x) {
 			- (or `= m`)
 			- `>= m`
 	
+	## No Cyclic Lists
+	
+	- -> less code
+	- pure functions *cannot* create cycles
+		- pure functions cannot refer to "future" data, or self
+		- `set!` is required to create cycles
+		- `set!` -> epicycles + accidental complexity
+		- `set!` == heap (random access)
+	- `set!` is `MOV`/`STO` low-level assembly function
+	- corollary: Pure Functional notation does not describe `set!`/`heap` well 
+		- force-fitting `set!` into FP leads to more code (aka "code bloat")
+		
 	## Visuals
 	[animation (silent, quick)](https://youtu.be/gn5E1jyzqro)
 	[animation (silent, real time)](https://www.youtube.com/watch?v=TF0FzcBkV60)
+	
+	## Optimization
+	
+	## Peel Instead of TCO
+	
+	Many functions pass a parameter verbatim to a callee.
+	
+	In `Eval (expr, env)`, the `env` alist is searched linearly for the first occurrence of a name.
+	
+	Shortening the length of the alist is one way to speed up the interpreter.
+	
+	Optimization: if a variable is unaltered from call to call, then don't add it to the env alist (previous values, already on the alist, hold the same value), and, don't re-eval the variable (since we already have its value).
+	
+	This is the suggestion of the [Peel function](https://justine.lol/sectorlisp2/#listing)
+	
+	TCO (Tail Call Optimization) accomplishes this same optimization, but, with more complexity.  TCO does the job "more thoroughly", than Peel(), but it might not be worth the extra effort in all cases.
+	
+	## Pure Functional GC
+	
+	Justine Tunney's GC, in Sector Lisp, demonstrates that GC can be very simple in a Pure Functional paradigm.
+	
+	When consideration for mutation is added, e.g. in the guise of *heaps* and *random access*, etc., code complexity - code bloat - increases.'
+	
+	From my perspective, Sector Lisp's main feature is not smallness, but purity of notation.
+	
+	When we add problems, like forever-looping and concurrency, to the otherwise pure notation, we create code bloat and epicycles.
+	
+	## Edits
+	
+	Edited Feb 17, 2022.  Added unwound C code.  Added section Pure Functional GC.

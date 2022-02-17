@@ -1,0 +1,4 @@
+- (... (cdr (cons (quote a) (quote b))) ... )
+- CONS can never create garbage
+- only CDR can create garbage - 1st cell of arg
+- 
